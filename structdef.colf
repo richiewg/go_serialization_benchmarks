@@ -6,5 +6,4 @@ type ColferA struct {
 	Phone    text
 	Siblings int32
 	Spouse   bool
-	Money    float64
 }

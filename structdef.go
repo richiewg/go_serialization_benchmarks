@@ -12,7 +12,6 @@ type A struct {
 	Phone    string
 	Siblings int
 	Spouse   bool
-	Money    float64
 }
 
 type NoTimeA struct {
@@ -21,5 +20,4 @@ type NoTimeA struct {
 	Phone    string
 	Siblings int
 	Spouse   bool
-	Money    float64
 }

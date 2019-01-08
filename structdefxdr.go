@@ -8,5 +8,4 @@ type XDRA struct {
 	Phone    string
 	Siblings int32
 	Spouse   bool
-	Money    uint64
 }

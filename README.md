@@ -62,7 +62,6 @@ type A struct {
     Phone    string
     Siblings int
     Spouse   bool
-    Money    float64
 }
 ```
 

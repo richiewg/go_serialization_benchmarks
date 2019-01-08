@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
-	"math"
 
 	C "github.com/glycerine/go-capnproto"
 )
@@ -30,8 +29,6 @@ func (s CapnpA) Siblings() int32         { return int32(C.Struct(s).Get32(8)) }
 func (s CapnpA) SetSiblings(v int32)     { C.Struct(s).Set32(8, uint32(v)) }
 func (s CapnpA) Spouse() bool            { return C.Struct(s).Get1(96) }
 func (s CapnpA) SetSpouse(v bool)        { C.Struct(s).Set1(96, v) }
-func (s CapnpA) Money() float64          { return math.Float64frombits(C.Struct(s).Get64(16)) }
-func (s CapnpA) SetMoney(v float64)      { C.Struct(s).Set64(16, math.Float64bits(v)) }
 func (s CapnpA) WriteJSON(w io.Writer) error {
 	b := bufio.NewWriter(w)
 	var err error
@@ -135,21 +132,6 @@ func (s CapnpA) WriteJSON(w io.Writer) error {
 	err = b.WriteByte(',')
 	if err != nil {
 		return err
-	}
-	_, err = b.WriteString("\"money\":")
-	if err != nil {
-		return err
-	}
-	{
-		s := s.Money()
-		buf, err = json.Marshal(s)
-		if err != nil {
-			return err
-		}
-		_, err = b.Write(buf)
-		if err != nil {
-			return err
-		}
 	}
 	err = b.WriteByte('}')
 	if err != nil {
@@ -266,21 +248,6 @@ func (s CapnpA) WriteCapLit(w io.Writer) error {
 	_, err = b.WriteString(", ")
 	if err != nil {
 		return err
-	}
-	_, err = b.WriteString("money = ")
-	if err != nil {
-		return err
-	}
-	{
-		s := s.Money()
-		buf, err = json.Marshal(s)
-		if err != nil {
-			return err
-		}
-		_, err = b.Write(buf)
-		if err != nil {
-			return err
-		}
 	}
 	err = b.WriteByte(')')
 	if err != nil {

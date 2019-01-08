@@ -32,7 +32,6 @@ type ProtoBufA struct {
 	Phone            *string  `protobuf:"bytes,3,req,name=phone" json:"phone,omitempty"`
 	Siblings         *int32   `protobuf:"varint,4,req,name=siblings" json:"siblings,omitempty"`
 	Spouse           *bool    `protobuf:"varint,5,req,name=spouse" json:"spouse,omitempty"`
-	Money            *float64 `protobuf:"fixed64,6,req,name=money" json:"money,omitempty"`
 	XXX_unrecognized []byte   `json:"-"`
 }
 
@@ -74,13 +73,6 @@ func (m *ProtoBufA) GetSpouse() bool {
 		return *m.Spouse
 	}
 	return false
-}
-
-func (m *ProtoBufA) GetMoney() float64 {
-	if m != nil && m.Money != nil {
-		return *m.Money
-	}
-	return 0
 }
 
 func init() {

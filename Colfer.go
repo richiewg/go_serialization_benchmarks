@@ -33,7 +33,6 @@ type ColferA struct {
 	Phone    string
 	Siblings int32
 	Spouse   bool
-	Money    float64
 }
 
 // MarshalTo encodes o as Colfer into buf and returns the number of bytes written.
@@ -115,13 +114,6 @@ func (o *ColferA) MarshalTo(buf []byte) int {
 		i++
 	}
 
-	if v := o.Money; v != 0.0 {
-		buf[i] = 5
-		x := math.Float64bits(v)
-		buf[i+1], buf[i+2], buf[i+3], buf[i+4] = byte(x>>56), byte(x>>48), byte(x>>40), byte(x>>32)
-		buf[i+5], buf[i+6], buf[i+7], buf[i+8] = byte(x>>24), byte(x>>16), byte(x>>8), byte(x)
-		i += 9
-	}
 
 	buf[i] = 0x7f
 	i++
@@ -178,9 +170,6 @@ func (o *ColferA) MarshalLen() int {
 		l++
 	}
 
-	if o.Money != 0.0 {
-		l += 9
-	}
 
 	return l
 }
@@ -333,7 +322,6 @@ func (o *ColferA) UnmarshalBinary(data []byte) error {
 		}
 		x := uint64(data[i])<<56 | uint64(data[i+1])<<48 | uint64(data[i+2])<<40 | uint64(data[i+3])<<32
 		x |= uint64(data[i+4])<<24 | uint64(data[i+5])<<16 | uint64(data[i+6])<<8 | uint64(data[i+7])
-		o.Money = math.Float64frombits(x)
 
 		header = data[i+8]
 		i += 9

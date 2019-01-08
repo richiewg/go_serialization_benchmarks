@@ -25,9 +25,6 @@ func (z *A) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "Spouse"
 	o = append(o, 0xa6, 0x53, 0x70, 0x6f, 0x75, 0x73, 0x65)
 	o = msgp.AppendBool(o, z.Spouse)
-	// string "Money"
-	o = append(o, 0xa5, 0x4d, 0x6f, 0x6e, 0x65, 0x79)
-	o = msgp.AppendFloat64(o, z.Money)
 	return
 }
 
@@ -72,11 +69,6 @@ func (z *A) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			if err != nil {
 				return
 			}
-		case "Money":
-			z.Money, bts, err = msgp.ReadFloat64Bytes(bts)
-			if err != nil {
-				return
-			}
 		default:
 			bts, err = msgp.Skip(bts)
 			if err != nil {
@@ -90,6 +82,6 @@ func (z *A) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *A) Msgsize() (s int) {
-	s = 1 + 5 + msgp.StringPrefixSize + len(z.Name) + 9 + msgp.TimeSize + 6 + msgp.StringPrefixSize + len(z.Phone) + 9 + msgp.IntSize + 7 + msgp.BoolSize + 6 + msgp.Float64Size
+	s = 1 + 5 + msgp.StringPrefixSize + len(z.Name) + 9 + msgp.TimeSize + 6 + msgp.StringPrefixSize + len(z.Phone) + 9 + msgp.IntSize + 7 + msgp.BoolSize
 	return
 }

@@ -10,5 +10,4 @@ struct CapnpA {
   phone    @2   :Text;
   siblings @3   :Int32;
   spouse   @4   :Bool;
-  money    @5   :Float64;
 }

@@ -6,5 +6,4 @@ table FlatBufferA {
 	phone:string;
 	siblings:int;
 	spouse:bool;
-	money:double;
 }

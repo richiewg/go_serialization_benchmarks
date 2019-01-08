@@ -36,7 +36,6 @@ type GogoProtoBufA struct {
 	Phone    string  `protobuf:"bytes,3,req,name=phone" json:"phone"`
 	Siblings int32   `protobuf:"varint,4,req,name=siblings" json:"siblings"`
 	Spouse   bool    `protobuf:"varint,5,req,name=spouse" json:"spouse"`
-	Money    float64 `protobuf:"fixed64,6,req,name=money" json:"money"`
 }
 
 func (m *GogoProtoBufA) Reset()                    { *m = GogoProtoBufA{} }
@@ -77,13 +76,6 @@ func (m *GogoProtoBufA) GetSpouse() bool {
 		return m.Spouse
 	}
 	return false
-}
-
-func (m *GogoProtoBufA) GetMoney() float64 {
-	if m != nil {
-		return m.Money
-	}
-	return 0
 }
 
 func init() {
@@ -127,8 +119,6 @@ func (m *GogoProtoBufA) MarshalTo(data []byte) (int, error) {
 	}
 	i++
 	data[i] = 0x31
-	i++
-	i = encodeFixed64StructdefGogo(data, i, uint64(math.Float64bits(float64(m.Money))))
 	return i, nil
 }
 
@@ -337,25 +327,6 @@ func (m *GogoProtoBufA) Unmarshal(data []byte) error {
 			}
 			m.Spouse = bool(v != 0)
 			hasFields[0] |= uint64(0x00000010)
-		case 6:
-			if wireType != 1 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Money", wireType)
-			}
-			var v uint64
-			if (iNdEx + 8) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += 8
-			v = uint64(data[iNdEx-8])
-			v |= uint64(data[iNdEx-7]) << 8
-			v |= uint64(data[iNdEx-6]) << 16
-			v |= uint64(data[iNdEx-5]) << 24
-			v |= uint64(data[iNdEx-4]) << 32
-			v |= uint64(data[iNdEx-3]) << 40
-			v |= uint64(data[iNdEx-2]) << 48
-			v |= uint64(data[iNdEx-1]) << 56
-			m.Money = float64(math.Float64frombits(v))
-			hasFields[0] |= uint64(0x00000020)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipStructdefGogo(data[iNdEx:])
@@ -385,9 +356,6 @@ func (m *GogoProtoBufA) Unmarshal(data []byte) error {
 	}
 	if hasFields[0]&uint64(0x00000010) == 0 {
 		return github_com_gogo_protobuf_proto.NewRequiredNotSetError("spouse")
-	}
-	if hasFields[0]&uint64(0x00000020) == 0 {
-		return github_com_gogo_protobuf_proto.NewRequiredNotSetError("money")
 	}
 
 	if iNdEx > l {

@@ -18,7 +18,6 @@ type GencodeA struct {
 	Phone    string
 	Siblings int64
 	Spouse   bool
-	Money    float64
 }
 
 func (d *GencodeA) Size() (s uint64) {
@@ -151,27 +150,6 @@ func (d *GencodeA) Marshal(buf []byte) ([]byte, error) {
 			buf[i+15] = 0
 		}
 	}
-	{
-
-		v := *(*uint64)(unsafe.Pointer(&(d.Money)))
-
-		buf[i+0+16] = byte(v >> 0)
-
-		buf[i+1+16] = byte(v >> 8)
-
-		buf[i+2+16] = byte(v >> 16)
-
-		buf[i+3+16] = byte(v >> 24)
-
-		buf[i+4+16] = byte(v >> 32)
-
-		buf[i+5+16] = byte(v >> 40)
-
-		buf[i+6+16] = byte(v >> 48)
-
-		buf[i+7+16] = byte(v >> 56)
-
-	}
 	return buf[:i+24], nil
 }
 
@@ -240,12 +218,6 @@ func (d *GencodeA) Unmarshal(buf []byte) (uint64, error) {
 	}
 	{
 		d.Spouse = buf[i+15] == 1
-	}
-	{
-
-		v := 0 | (uint64(buf[i+0+16]) << 0) | (uint64(buf[i+1+16]) << 8) | (uint64(buf[i+2+16]) << 16) | (uint64(buf[i+3+16]) << 24) | (uint64(buf[i+4+16]) << 32) | (uint64(buf[i+5+16]) << 40) | (uint64(buf[i+6+16]) << 48) | (uint64(buf[i+7+16]) << 56)
-		d.Money = *(*float64)(unsafe.Pointer(&v))
-
 	}
 	return i + 24, nil
 }

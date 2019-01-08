@@ -4,5 +4,4 @@ struct GencodeA {
     Phone    string
     Siblings vint64
     Spouse   bool
-    Money    float64
 }

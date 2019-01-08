@@ -49,10 +49,6 @@ var (
 		    {
 		      "name": "spouse",
 		      "type": "boolean"
-		    },
-		    {
-		      "name": "money",
-		      "type": "double"
 		    }
 		  ]
 		}
@@ -80,7 +76,6 @@ func (a *AvroA) Marshal(o interface{}) []byte {
 	a.record.Set("phone", object.Phone)
 	a.record.Set("siblings", int32(object.Siblings))
 	a.record.Set("spouse", object.Spouse)
-	a.record.Set("money", object.Money)
 	b := new(bytes.Buffer)
 	if err := a.codec.Encode(b, a.record); err != nil {
 		fmt.Printf("Avro encoding error: %v\n", err)
@@ -108,8 +103,6 @@ func (a *AvroA) Unmarshal(d []byte, o interface{}) error {
 	object.Siblings = int(temp.(int32))
 	temp, _ = rec.Get("spouse")
 	object.Spouse = temp.(bool)
-	temp, _ = rec.Get("money")
-	object.Money = temp.(float64)
 	return nil
 }
 
@@ -125,7 +118,6 @@ func avroMarshal(o interface{}, marshalFunc func([]byte, interface{}) ([]byte, e
 		"phone":    object.Phone,
 		"siblings": int32(object.Siblings),
 		"spouse":   object.Spouse,
-		"money":    object.Money,
 	})
 	if err != nil {
 		fmt.Printf("Avro2 encoding error: %v\n", err)
@@ -147,7 +139,6 @@ func avroUnmarshal(d []byte, o interface{}, unmarshalFunc func([]byte) (interfac
 	object.Phone = m["phone"].(string)
 	object.Siblings = int(m["siblings"].(int32))
 	object.Spouse = m["spouse"].(bool)
-	object.Money = m["money"].(float64)
 	return nil
 }
 

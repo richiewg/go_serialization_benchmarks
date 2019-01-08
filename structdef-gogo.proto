@@ -12,5 +12,4 @@ message GogoProtoBufA {
   required string phone = 3 [(gogoproto.nullable) = false];
   required int32 siblings = 4 [(gogoproto.nullable) = false];
   required bool spouse = 5 [(gogoproto.nullable) = false];
-  required double money = 6 [(gogoproto.nullable) = false];
 }

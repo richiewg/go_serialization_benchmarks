@@ -10,7 +10,6 @@ type BXAA struct {
 	Phone    string
 	Siblings uint32
 	Spouse   bool
-	Money    uint64
 }
 
 func (o *BXAA) MarshalTo() ([]byte,error) {
@@ -32,10 +31,6 @@ func (o *BXAA) MarshalTo() ([]byte,error) {
 		return nil,err
 	}
 	err=WriteBool(temp,o.Spouse)
-	if err != nil {
-		return nil,err
-	}
-	err= WriteUint64(temp,o.Money)
 	if err != nil {
 		return nil,err
 	}
@@ -65,15 +60,10 @@ func (o *BXAA) UnMarshal(data []byte) error{
 	if err != nil {
 		return err
 	}
-	soney, err := ReadUint64(r)
-	if err != nil {
-		return err
-	}
 	o.Name= name
 	o.BirthDay= birthday
 	o.Phone= phone
 	o.Siblings= siblings
 	o.Spouse= spouse
-	o.Money= soney
 	return nil
 }

@@ -3,7 +3,6 @@ package goserbench
 // AUTO GENERATED - DO NOT EDIT
 
 import (
-	math "math"
 
 	capnp "zombiezen.com/go/capnproto2"
 )
@@ -127,15 +126,6 @@ func (s Capnp2A) Spouse() bool {
 func (s Capnp2A) SetSpouse(v bool) {
 
 	s.Struct.SetBit(96, v)
-}
-
-func (s Capnp2A) Money() float64 {
-	return math.Float64frombits(s.Struct.Uint64(16))
-}
-
-func (s Capnp2A) SetMoney(v float64) {
-
-	s.Struct.SetUint64(16, math.Float64bits(v))
 }
 
 // Capnp2A_List is a list of Capnp2A.

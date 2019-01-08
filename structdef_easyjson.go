@@ -34,8 +34,6 @@ func easyjson_decode_go_serialization_benchmarks_A(in *jlexer.Lexer, out *A) {
 			out.Siblings = in.Int()
 		case "Spouse":
 			out.Spouse = in.Bool()
-		case "Money":
-			out.Money = in.Float64()
 		default:
 			in.SkipRecursive()
 		}
@@ -77,12 +75,6 @@ func easyjson_encode_go_serialization_benchmarks_A(out *jwriter.Writer, in *A) {
 	first = false
 	out.RawString("\"Spouse\":")
 	out.Bool(in.Spouse)
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"Money\":")
-	out.Float64(in.Money)
 	out.RawByte('}')
 }
 func (v *A) MarshalJSONEasyJSON() ([]byte, error) {

@@ -6,5 +6,4 @@ message ProtoBufA {
   required string phone = 3;
   required int32 siblings = 4;
   required bool spouse = 5;
-  required double money = 6;
 }

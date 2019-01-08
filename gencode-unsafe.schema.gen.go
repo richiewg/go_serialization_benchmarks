@@ -18,7 +18,6 @@ type GencodeUnsafeA struct {
 	Phone    string
 	Siblings int64
 	Spouse   bool
-	Money    float64
 }
 
 func (d *GencodeUnsafeA) Size() (s uint64) {
@@ -149,11 +148,6 @@ func (d *GencodeUnsafeA) Marshal(buf []byte) ([]byte, error) {
 			buf[i+8] = 0
 		}
 	}
-	{
-
-		*(*float64)(unsafe.Pointer(&buf[i+9])) = d.Money
-
-	}
 	return buf[:i+17], nil
 }
 
@@ -224,11 +218,6 @@ func (d *GencodeUnsafeA) Unmarshal(buf []byte) (uint64, error) {
 	}
 	{
 		d.Spouse = buf[i+8] == 1
-	}
-	{
-
-		d.Money = *(*float64)(unsafe.Pointer(&buf[i+9]))
-
 	}
 	return i + 17, nil
 }

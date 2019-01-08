@@ -32,7 +32,6 @@ XDRA Structure:
 |                      Spouse (V=0 or 1)                      |V|
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |                                                               |
-+                        Money (64 bits)                        +
 |                                                               |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -43,7 +42,6 @@ struct XDRA {
 	string Phone<>;
 	int Siblings;
 	bool Spouse;
-	unsigned hyper Money;
 }
 
 */
@@ -73,7 +71,6 @@ func (o XDRA) MarshalXDRInto(m *xdr.Marshaller) error {
 	m.MarshalString(o.Phone)
 	m.MarshalUint32(uint32(o.Siblings))
 	m.MarshalBool(o.Spouse)
-	m.MarshalUint64(o.Money)
 	return m.Error
 }
 
@@ -87,6 +84,5 @@ func (o *XDRA) UnmarshalXDRFrom(u *xdr.Unmarshaller) error {
 	o.Phone = u.UnmarshalString()
 	o.Siblings = int32(u.UnmarshalUint32())
 	o.Spouse = u.UnmarshalBool()
-	o.Money = u.UnmarshalUint64()
 	return u.Error
 }

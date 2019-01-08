@@ -5,7 +5,6 @@ import (
 	"encoding/gob"
 	"encoding/json"
 	"fmt"
-	"math"
 	"math/rand"
 	"os"
 	"reflect"
@@ -55,7 +54,6 @@ func generate() []*A {
 			Phone:    randString(10),
 			Siblings: rand.Intn(5),
 			Spouse:   rand.Intn(2) == 1,
-			Money:    rand.Float64(),
 		})
 	}
 	return a
@@ -123,7 +121,7 @@ func benchUnmarshal(b *testing.B, s Serializer) {
 		// Validate unmarshalled data.
 		if validate != "" {
 			i := data[n]
-			correct := o.Name == i.Name && o.Phone == i.Phone && o.Siblings == i.Siblings && o.Spouse == i.Spouse && o.Money == i.Money && o.BirthDay.Equal(i.BirthDay) //&& cmpTags(o.Tags, i.Tags) && cmpAliases(o.Aliases, i.Aliases)
+			correct := o.Name == i.Name && o.Phone == i.Phone && o.Siblings == i.Siblings && o.Spouse == i.Spouse && o.BirthDay.Equal(i.BirthDay) //&& cmpTags(o.Tags, i.Tags) && cmpAliases(o.Aliases, i.Aliases)
 			if !correct {
 				b.Fatalf("unmarshaled object differed:\n%v\n%v", i, o)
 			}
@@ -183,7 +181,6 @@ func generateNoTimeA() []*NoTimeA {
 			Phone:    randString(10),
 			Siblings: rand.Intn(5),
 			Spouse:   rand.Intn(2) == 1,
-			Money:    rand.Float64(),
 		})
 	}
 	return a
@@ -223,7 +220,7 @@ func BenchmarkGotinyNoTimeUnmarshal(b *testing.B) {
 		// Validate unmarshalled data.
 		if validate != "" {
 			i := data[n]
-			correct := o.Name == i.Name && o.Phone == i.Phone && o.Siblings == i.Siblings && o.Spouse == i.Spouse && o.Money == i.Money && o.BirthDay == i.BirthDay //&& cmpTags(o.Tags, i.Tags) && cmpAliases(o.Aliases, i.Aliases)
+			correct := o.Name == i.Name && o.Phone == i.Phone && o.Siblings == i.Siblings && o.Spouse == i.Spouse && o.BirthDay == i.BirthDay //&& cmpTags(o.Tags, i.Tags) && cmpAliases(o.Aliases, i.Aliases)
 			if !correct {
 				b.Fatalf("unmarshaled object differed:\n%v\n%v", i, o)
 			}
@@ -587,7 +584,6 @@ func (s *FlatBufferSerializer) Marshal(o interface{}) []byte {
 		spouse = byte(1)
 	}
 	FlatBufferAAddSpouse(builder, spouse)
-	FlatBufferAAddMoney(builder, a.Money)
 	builder.Finish(FlatBufferAEnd(builder))
 	return builder.Bytes[builder.Head():]
 }
@@ -601,7 +597,6 @@ func (s *FlatBufferSerializer) Unmarshal(d []byte, i interface{}) error {
 	a.Phone = string(o.Phone())
 	a.Siblings = int(o.Siblings())
 	a.Spouse = o.Spouse() == byte(1)
-	a.Money = o.Money()
 	return nil
 }
 
@@ -633,7 +628,6 @@ func (x *CapNProtoSerializer) Marshal(o interface{}) []byte {
 	c.SetPhone(a.Phone)
 	c.SetSiblings(int32(a.Siblings))
 	c.SetSpouse(a.Spouse)
-	c.SetMoney(a.Money)
 	x.out.Reset()
 	s.WriteTo(x.out)
 	x.buf = []byte(s.Data)[:0]
@@ -649,7 +643,6 @@ func (x *CapNProtoSerializer) Unmarshal(d []byte, i interface{}) error {
 	a.Phone = string(o.PhoneBytes())
 	a.Siblings = int(o.Siblings())
 	a.Spouse = o.Spouse()
-	a.Money = o.Money()
 	return nil
 }
 
@@ -680,7 +673,6 @@ func (x *CapNProto2Serializer) Marshal(o interface{}) []byte {
 	c.SetPhone(a.Phone)
 	c.SetSiblings(int32(a.Siblings))
 	c.SetSpouse(a.Spouse)
-	c.SetMoney(a.Money)
 	b, _ := m.Marshal()
 	return b
 }
@@ -694,7 +686,6 @@ func (x *CapNProto2Serializer) Unmarshal(d []byte, i interface{}) error {
 	a.Phone, _ = o.Phone()
 	a.Siblings = int(o.Siblings())
 	a.Spouse = o.Spouse()
-	a.Money = o.Money()
 	return nil
 }
 
@@ -727,7 +718,6 @@ func (s *HproseSerializer) Marshal(o interface{}) []byte {
 	writer.WriteString(a.Phone)
 	writer.WriteInt64(int64(a.Siblings))
 	writer.WriteBool(a.Spouse)
-	writer.WriteFloat64(a.Money)
 	return buf.Bytes()[l:]
 }
 
@@ -740,7 +730,6 @@ func (s *HproseSerializer) Unmarshal(d []byte, i interface{}) error {
 	o.Phone, _ = reader.ReadString()
 	o.Siblings, _ = reader.ReadInt()
 	o.Spouse, _ = reader.ReadBool()
-	o.Money, _ = reader.ReadFloat64()
 	return nil
 }
 
@@ -778,7 +767,6 @@ func (s Hprose2Serializer) Marshal(o interface{}) []byte {
 	writer.WriteString(a.Phone)
 	writer.WriteInt(int64(a.Siblings))
 	writer.WriteBool(a.Spouse)
-	writer.WriteFloat(a.Money, 64)
 	return writer.Bytes()
 }
 
@@ -791,7 +779,6 @@ func (s Hprose2Serializer) Unmarshal(d []byte, i interface{}) error {
 	o.Phone = reader.ReadString()
 	o.Siblings = int(reader.ReadInt())
 	o.Spouse = reader.ReadBool()
-	o.Money = reader.ReadFloat64()
 	return nil
 }
 
@@ -846,7 +833,6 @@ func generateProto() []*ProtoBufA {
 			Phone:    proto.String(randString(10)),
 			Siblings: proto.Int32(rand.Int31n(5)),
 			Spouse:   proto.Bool(rand.Intn(2) == 1),
-			Money:    proto.Float64(rand.Float64()),
 		})
 	}
 	return a
@@ -881,7 +867,7 @@ func BenchmarkGoprotobufUnmarshal(b *testing.B) {
 		// Validate unmarshalled data.
 		if validate != "" {
 			i := data[n]
-			correct := *o.Name == *i.Name && *o.Phone == *i.Phone && *o.Siblings == *i.Siblings && *o.Spouse == *i.Spouse && *o.Money == *i.Money && *o.BirthDay == *i.BirthDay //&& cmpTags(o.Tags, i.Tags) && cmpAliases(o.Aliases, i.Aliases)
+			correct := *o.Name == *i.Name && *o.Phone == *i.Phone && *o.Siblings == *i.Siblings && *o.Spouse == *i.Spouse && *o.BirthDay == *i.BirthDay //&& cmpTags(o.Tags, i.Tags) && cmpAliases(o.Aliases, i.Aliases)
 			if !correct {
 				b.Fatalf("unmarshaled object differed:\n%v\n%v", i, o)
 			}
@@ -900,7 +886,6 @@ func generateGogoProto() []*GogoProtoBufA {
 			Phone:    randString(10),
 			Siblings: rand.Int31n(5),
 			Spouse:   rand.Intn(2) == 1,
-			Money:    rand.Float64(),
 		})
 	}
 	return a
@@ -935,7 +920,7 @@ func BenchmarkGogoprotobufUnmarshal(b *testing.B) {
 		// Validate unmarshalled data.
 		if validate != "" {
 			i := data[n]
-			correct := o.Name == i.Name && o.Phone == i.Phone && o.Siblings == i.Siblings && o.Spouse == i.Spouse && o.Money == i.Money && o.BirthDay == i.BirthDay //&& cmpTags(o.Tags, i.Tags) && cmpAliases(o.Aliases, i.Aliases)
+			correct := o.Name == i.Name && o.Phone == i.Phone && o.Siblings == i.Siblings && o.Spouse == i.Spouse && o.BirthDay == i.BirthDay //&& cmpTags(o.Tags, i.Tags) && cmpAliases(o.Aliases, i.Aliases)
 			if !correct {
 				b.Fatalf("unmarshaled object differed:\n%v\n%v", i, o)
 			}
@@ -953,7 +938,6 @@ func generateBXA() []*BXAA {
 			Phone:    randString(10),
 			Siblings: uint32(rand.Int31n(5)),
 			Spouse:   rand.Intn(2) == 1,
-			Money:    uint64(time.Now().UnixNano()),
 		})
 	}
 	return a
@@ -993,7 +977,7 @@ func BenchmarkBXAUnmarshal(b *testing.B) {
 		}
 		if validate != "" {
 			i := data[n]
-			correct := o.Name == i.Name && o.Phone == i.Phone && o.Siblings == i.Siblings && o.Spouse == i.Spouse && o.Money == i.Money && o.BirthDay==i.BirthDay
+			correct := o.Name == i.Name && o.Phone == i.Phone && o.Siblings == i.Siblings && o.Spouse == i.Spouse && o.BirthDay==i.BirthDay
 			if !correct {
 				b.Fatalf("unmarshaled object differed:\n%v\n%v", i, o)
 			}
@@ -1012,7 +996,6 @@ func generateColfer() []*ColferA {
 			Phone:    randString(10),
 			Siblings: rand.Int31n(5),
 			Spouse:   rand.Intn(2) == 1,
-			Money:    rand.Float64(),
 		})
 	}
 	return a
@@ -1051,7 +1034,7 @@ func BenchmarkColferUnmarshal(b *testing.B) {
 		}
 		if validate != "" {
 			i := data[n]
-			correct := o.Name == i.Name && o.Phone == i.Phone && o.Siblings == i.Siblings && o.Spouse == i.Spouse && o.Money == i.Money && o.BirthDay.Equal(i.BirthDay)
+			correct := o.Name == i.Name && o.Phone == i.Phone && o.Siblings == i.Siblings && o.Spouse == i.Spouse  && o.BirthDay.Equal(i.BirthDay)
 			if !correct {
 				b.Fatalf("unmarshaled object differed:\n%v\n%v", i, o)
 			}
@@ -1070,7 +1053,6 @@ func generateGencode() []*GencodeA {
 			Phone:    randString(10),
 			Siblings: rand.Int63n(5),
 			Spouse:   rand.Intn(2) == 1,
-			Money:    rand.Float64(),
 		})
 	}
 	return a
@@ -1105,7 +1087,7 @@ func BenchmarkGencodeUnmarshal(b *testing.B) {
 		// Validate unmarshalled data.
 		if validate != "" {
 			i := data[n]
-			correct := o.Name == i.Name && o.Phone == i.Phone && o.Siblings == i.Siblings && o.Spouse == i.Spouse && o.Money == i.Money && o.BirthDay.Equal(i.BirthDay) //&& cmpTags(o.Tags, i.Tags) && cmpAliases(o.Aliases, i.Aliases)
+			correct := o.Name == i.Name && o.Phone == i.Phone && o.Siblings == i.Siblings && o.Spouse == i.Spouse && o.BirthDay.Equal(i.BirthDay) //&& cmpTags(o.Tags, i.Tags) && cmpAliases(o.Aliases, i.Aliases)
 			if !correct {
 				b.Fatalf("unmarshaled object differed:\n%v\n%v", i, o)
 			}
@@ -1122,7 +1104,6 @@ func generateGencodeUnsafe() []*GencodeUnsafeA {
 			Phone:    randString(10),
 			Siblings: rand.Int63n(5),
 			Spouse:   rand.Intn(2) == 1,
-			Money:    rand.Float64(),
 		})
 	}
 	return a
@@ -1157,7 +1138,7 @@ func BenchmarkGencodeUnsafeUnmarshal(b *testing.B) {
 		// Validate unmarshalled data.
 		if validate != "" {
 			i := data[n]
-			correct := o.Name == i.Name && o.Phone == i.Phone && o.Siblings == i.Siblings && o.Spouse == i.Spouse && o.Money == i.Money && o.BirthDay == i.BirthDay //&& cmpTags(o.Tags, i.Tags) && cmpAliases(o.Aliases, i.Aliases)
+			correct := o.Name == i.Name && o.Phone == i.Phone && o.Siblings == i.Siblings && o.Spouse == i.Spouse  && o.BirthDay == i.BirthDay //&& cmpTags(o.Tags, i.Tags) && cmpAliases(o.Aliases, i.Aliases)
 			if !correct {
 				b.Fatalf("unmarshaled object differed:\n%v\n%v", i, o)
 			}
@@ -1176,7 +1157,6 @@ func generateXDR() []*XDRA {
 			Phone:    randString(10),
 			Siblings: rand.Int31n(5),
 			Spouse:   rand.Intn(2) == 1,
-			Money:    math.Float64bits(rand.Float64()),
 		})
 	}
 	return a
@@ -1211,7 +1191,7 @@ func BenchmarkXDR2Unmarshal(b *testing.B) {
 		// Validate unmarshalled data.
 		if validate != "" {
 			i := data[n]
-			correct := o.Name == i.Name && o.Phone == i.Phone && o.Siblings == i.Siblings && o.Spouse == i.Spouse && o.Money == i.Money && o.BirthDay == i.BirthDay
+			correct := o.Name == i.Name && o.Phone == i.Phone && o.Siblings == i.Siblings && o.Spouse == i.Spouse && o.BirthDay == i.BirthDay
 			if !correct {
 				b.Fatalf("unmarshaled object differed:\n%v\n%v", i, o)
 			}
@@ -1255,7 +1235,6 @@ type IkeA struct {
 	Phone    string
 	Siblings int32
 	Spouse   bool
-	Money    uint64
 }
 
 func generateIkeA() []*IkeA {
@@ -1267,7 +1246,6 @@ func generateIkeA() []*IkeA {
 			Phone:    randString(10),
 			Siblings: rand.Int31n(5),
 			Spouse:   rand.Intn(2) == 1,
-			Money:    math.Float64bits(rand.Float64()),
 		})
 	}
 	return a
@@ -1311,7 +1289,7 @@ func BenchmarkIkeaUnmarshal(b *testing.B) {
 		// Validate unmarshalled data.
 		if validate != "" {
 			i := data[n]
-			correct := o.Name == i.Name && o.Phone == i.Phone && o.Siblings == i.Siblings && o.Spouse == i.Spouse && o.Money == i.Money && o.BirthDay == i.BirthDay
+			correct := o.Name == i.Name && o.Phone == i.Phone && o.Siblings == i.Siblings && o.Spouse == i.Spouse && o.BirthDay == i.BirthDay
 			if !correct {
 				b.Fatalf("unmarshaled object differed:\n%v\n%v", i, o)
 			}
