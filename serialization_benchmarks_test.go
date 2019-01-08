@@ -943,6 +943,64 @@ func BenchmarkGogoprotobufUnmarshal(b *testing.B) {
 	}
 }
 
+// github.com/bxa/bxa/common/serialization/serialize.go
+func generateBXA() []*BXAA {
+	a := make([]*BXAA, 0, 1000)
+	for i := 0; i < 1000; i++ {
+		a = append(a, &BXAA{
+			Name:     randString(16),
+			BirthDay: uint64(time.Now().UnixNano()),
+			Phone:    randString(10),
+			Siblings: uint32(rand.Int31n(5)),
+			Spouse:   rand.Intn(2) == 1,
+			Money:    uint64(time.Now().UnixNano()),
+		})
+	}
+	return a
+}
+
+func BenchmarkBXAMarshal(b *testing.B) {
+	b.StopTimer()
+	data := generateBXA()
+	b.ReportAllocs()
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		n := rand.Intn(len(data))
+		_, err := data[n].MarshalTo()
+		if err != nil {
+			b.Fatalf("BXA failed to marshal %#v: %s", data[n], err)
+		}
+	}
+}
+
+func BenchmarkBXAUnmarshal(b *testing.B) {
+	data := generateBXA()
+	ser := make([][]byte, len(data))
+	for i, d := range data {
+		var err error
+		ser[i], err = d.MarshalTo()
+		if err != nil {
+			b.Fatal(err)
+		}
+	}
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		n := rand.Intn(len(ser))
+		o := &BXAA{}
+		if err := o.UnMarshal(ser[n]); err != nil {
+			b.Fatalf("BXA failed to unmarshal %#v: %s", data[n], err)
+		}
+		if validate != "" {
+			i := data[n]
+			correct := o.Name == i.Name && o.Phone == i.Phone && o.Siblings == i.Siblings && o.Spouse == i.Spouse && o.Money == i.Money && o.BirthDay==i.BirthDay
+			if !correct {
+				b.Fatalf("unmarshaled object differed:\n%v\n%v", i, o)
+			}
+		}
+	}
+}
+
 // github.com/pascaldekloe/colfer
 
 func generateColfer() []*ColferA {
